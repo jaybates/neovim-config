@@ -123,34 +123,13 @@ return {
     },
 
     -- =============================================================================
-    -- QUICK COMMAND EXECUTION
+    -- QUICK COMMAND EXECUTION (Startify disabled - using doom-dashboard as startup)
     -- =============================================================================
-    {
-        "mhinz/vim-startify",
-        event = "VimEnter",
-        config = function()
-            -- Startify configuration for better startup experience
-            vim.g.startify_lists = {
-                { type = "files", header = { "   Recent files" } },
-                { type = "dir", header = { "   Recent files in " .. vim.fn.getcwd() } },
-                { type = "sessions", header = { "   Sessions" } },
-                { type = "bookmarks", header = { "   Bookmarks" } },
-                { type = "commands", header = { "   Commands" } },
-            }
-
-            vim.g.startify_commands = {
-                { c = { "Check Health", ":checkhealth" } },
-                { m = { "Mason", ":Mason" } },
-                { s = { "Startify", ":Startify" } },
-                { t = { "ToggleTerm", ":ToggleTerm" } },
-                { g = { "LazyGit", ":LazyGit" } },
-            }
-
-            vim.g.startify_bookmarks = {
-                { c = "~/.config/nvim" },
-                { d = "~/Documents" },
-                { p = "~/Projects" },
-            }
-        end,
-    },
+    -- vim-startify removed so the Doom-style dashboard (alpha-nvim in doom-dashboard.lua)
+    -- is the only startup screen. Re-enable this block if you want Startify back.
+    -- {
+    --     "mhinz/vim-startify",
+    --     event = "VimEnter",
+    --     ...
+    -- },
 }

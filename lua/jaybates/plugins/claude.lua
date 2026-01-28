@@ -306,10 +306,13 @@ Original code:
             setup_claude_integration()
         end
 
-        -- Initialize Claude integration when the plugin loads
+        -- Initialize Claude integration when the plugin loads (skip when opening with no file so dashboard stays)
         vim.api.nvim_create_autocmd("VimEnter", {
             once = true,
-            callback = init_claude_integration,
+            callback = function()
+                if vim.fn.argc() == 0 then return end
+                init_claude_integration()
+            end,
         })
     end,
 }

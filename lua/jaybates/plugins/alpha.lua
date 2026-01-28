@@ -1,10 +1,26 @@
 -- =============================================================================
--- Legacy Alpha Configuration (Disabled)
+-- Alpha-nvim: default startup screen
 -- =============================================================================
--- This file is disabled in favor of the new Doom-style dashboard
--- See: lua/jaybates/plugins/doom-dashboard.lua
+-- Uses the built-in dashboard theme with custom NEOVIM header.
+-- Shows when you open Neovim with no file.
 
 return {
     "goolord/alpha-nvim",
-    enabled = false, -- Disabled in favor of doom-dashboard.lua
+    event = "VimEnter",
+    config = function()
+        local dashboard = require("alpha.themes.dashboard")
+
+        dashboard.section.header.val = {
+            "",
+            "    ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗",
+            "    ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║",
+            "    ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║",
+            "    ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║",
+            "    ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║",
+            "    ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝",
+            "",
+        }
+
+        require("alpha").setup(dashboard.opts)
+    end,
 }
