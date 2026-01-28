@@ -84,11 +84,14 @@ return {
                 bufferline = true,       -- Buffer line
                 dap = true,              -- Debug Adapter Protocol
                 dap_ui = true,           -- DAP UI
-                -- fzf = true,              -- Fuzzy finder (not available in current catppuccin version)
+                diffview = true,         -- Diffview (git.lua)
+                fzf = true,              -- fzf-lua fuzzy finder
                 harpoon = true,          -- File marks
-                indent_blankline = true, -- Indent guides
-                lsp_trouble = true,      -- LSP diagnostics
+                indent_blankline = true,  -- Indent guides
+                lsp_trouble = true,       -- LSP diagnostics
                 mason = true,            -- LSP installer
+                nvim_surround = true,    -- nvim-surround
+                overseer = true,         -- Task runner (terminal-extras.lua)
                 mini = {
                     enabled = true,      -- Mini plugins
                     indentscope_color = "" -- Indent scope color
