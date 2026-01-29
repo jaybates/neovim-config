@@ -13,63 +13,63 @@ return {
         -- =============================================================================
         local lint = require("lint")
 
+        -- Resolve at runtime so Mason-installed tools work after :MasonInstall
+        local mason = vim.fn.stdpath("data") .. "/mason/bin"
+        local function eslint_d_cmd()
+            local p = mason .. "/eslint_d"
+            return (vim.fn.executable(p) == 1) and p or "eslint_d"
+        end
+        local function prettier_cmd()
+            local p = mason .. "/prettier"
+            return (vim.fn.executable(p) == 1) and p or "prettier"
+        end
+        local function stylelint_cmd()
+            local p = mason .. "/stylelint"
+            return (vim.fn.executable(p) == 1) and p or "stylelint"
+        end
+
         -- =============================================================================
         -- LINTER CONFIGURATION BY FILE TYPE
         -- =============================================================================
         lint.linters_by_ft = {
-            -- =============================================================================
-            -- WEB DEVELOPMENT
-            -- =============================================================================
+            -- React, JS, Node
             javascript = {"eslint_d", "prettier"},
             typescript = {"eslint_d", "prettier"},
             javascriptreact = {"eslint_d", "prettier"},
             typescriptreact = {"eslint_d", "prettier"},
             jsx = {"eslint_d", "prettier"},
             tsx = {"eslint_d", "prettier"},
-            
-            -- =============================================================================
-            -- STYLING
-            -- =============================================================================
+            -- Styling
             css = {"stylelint"},
             scss = {"stylelint"},
             sass = {"stylelint"},
             less = {"stylelint"},
-            
-            -- =============================================================================
-            -- MARKUP
-            -- =============================================================================
+            -- Markup
             html = {"htmlhint"},
-            vue = {"eslint_d", "prettier"},
-            svelte = {"eslint_d", "prettier"},
-            
-            -- =============================================================================
-            -- CONFIGURATION FILES
-            -- =============================================================================
+            php = {"phpcs"},
+            -- Data
             json = {"jsonlint"},
             yaml = {"yamllint"},
             yml = {"yamllint"},
-            
-            -- =============================================================================
-            -- BACKEND LANGUAGES
-            -- =============================================================================
+            -- Backend
             python = {"flake8", "pylint"},
             lua = {"luacheck"},
             go = {"golangci_lint"},
-            rust = {"cargo_check"},
-            
-            -- =============================================================================
-            -- SHELL & SCRIPTING
-            -- =============================================================================
+            -- Shell
             sh = {"shellcheck"},
             bash = {"shellcheck"},
             zsh = {"shellcheck"},
+            -- Docker, Terraform
+            dockerfile = {"hadolint"},
+            terraform = {"tflint"},
+            hcl = {"tflint"},
         }
 
         -- =============================================================================
         -- CUSTOM LINTER CONFIGURATIONS
         -- =============================================================================
         lint.linters.eslint_d = {
-            cmd = "eslint_d",
+            cmd = eslint_d_cmd,
             stdin = true,
             args = {
                 "--stdin",
@@ -110,7 +110,7 @@ return {
         -- PRETTIER LINTER CONFIGURATION
         -- =============================================================================
         lint.linters.prettier = {
-            cmd = "prettier",
+            cmd = prettier_cmd,
             stdin = true,
             args = {
                 "--check",
@@ -145,7 +145,7 @@ return {
         -- STYLELINT CONFIGURATION
         -- =============================================================================
         lint.linters.stylelint = {
-            cmd = "stylelint",
+            cmd = stylelint_cmd,
             stdin = true,
             args = {
                 "--stdin-filename",
@@ -178,17 +178,24 @@ return {
         }
 
         -- =============================================================================
-        -- AUTO-LINTING SETUP
+        -- AUTO-LINTING SETUP (debounced to avoid running on every keystroke)
         -- =============================================================================
-        local lint_augroup = vim.api.nvim_create_augroup("lint", {
-            clear = true
-        })
-
-        vim.api.nvim_create_autocmd({"BufEnter", "BufWritePost", "InsertLeave"}, {
-            group = lint_augroup,
-            callback = function()
-                lint.try_lint()
+        local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
+        local lint_timer = nil
+        local function debounced_lint()
+            if lint_timer then
+                pcall(function() lint_timer:stop() end)
+                lint_timer = nil
             end
+            lint_timer = vim.defer_fn(function()
+                lint_timer = nil
+                lint.try_lint()
+            end, 150)
+        end
+
+        vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
+            group = lint_augroup,
+            callback = debounced_lint,
         })
 
         -- =============================================================================

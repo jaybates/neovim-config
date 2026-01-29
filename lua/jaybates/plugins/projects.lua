@@ -14,11 +14,11 @@ return {
       -- Detection methods
       detection_methods = { "lsp", "pattern" },
       
-      -- Patterns to detect project root
-      patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json", "pom.xml", "Cargo.toml" },
+      -- Patterns to detect project root (React/Node, Python, Go, PHP, etc.)
+      patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json", "pyproject.toml" },
       
-      -- Exclude directories
-      exclude_dirs = { "~/.cargo/*", "~/.*" },
+      -- Exclude directories from project detection
+      exclude_dirs = {},
       
       -- Show hidden files
       show_hidden = false,

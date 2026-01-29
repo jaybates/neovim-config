@@ -6,10 +6,9 @@
 
 return {
     "nvim-treesitter/nvim-treesitter",
-    event = {"BufReadPre", "BufNewFile"}, -- Load on file read
-    -- Note: build step removed - parsers are installed automatically via ensure_installed
-    -- If you need to update parsers manually, run :TSUpdate after treesitter is loaded
-    lazy = true, -- Lazy load for better performance
+    priority = 150, -- Before comment.nvim and nvim-ts-autotag (they depend on TS)
+    event = {"BufReadPre", "BufNewFile"},
+    lazy = true,
     dependencies = {
         "windwp/nvim-ts-autotag", -- Auto-close HTML/JSX tags
     },
@@ -28,9 +27,10 @@ return {
             -- SYNTAX HIGHLIGHTING
             -- =============================================================================
             highlight = {
-                enable = true, -- Enable syntax highlighting
-                additional_vim_regex_highlighting = false, -- Disable regex highlighting
-                disable = {}, -- Languages to disable highlighting for
+                enable = true,
+                additional_vim_regex_highlighting = false,
+                disable = {},
+                max_file_lines = 10000, -- Skip TS highlight for huge files (faster)
             },
             
             -- =============================================================================
@@ -42,33 +42,19 @@ return {
             },
             
             -- =============================================================================
-            -- AUTO-TAGGING
-            -- =============================================================================
-            autotag = {
-                enable = true, -- Enable auto-tagging for HTML/JSX
-            },
-            
-            -- =============================================================================
             -- LANGUAGE PARSERS
             -- =============================================================================
             ensure_installed = {
-                -- Web Development
+                -- React, JS, Node, Web
                 "html", "css", "javascript", "typescript", "tsx", "json", "yaml",
-                
-                -- Backend Development
-                "lua", "python", "go", "rust", "java", "c", "cpp",
-                
-                -- Markup & Documentation
-                "markdown", "markdown_inline", "vim", "vimdoc",
-                
-                -- Configuration & Data
-                "toml", "dockerfile", "gitignore", "graphql",
-                
-                -- Shell & Scripting
-                "bash", "awk", "php",
-                
-                -- Additional Languages
-                "kotlin", "xml", "dot", "comment", "query",
+                -- Backend
+                "lua", "python", "go", "php",
+                -- Data & config
+                "graphql", "xml", "toml", "dockerfile", "gitignore",
+                -- Terraform (HCL)
+                "hcl",
+                -- Docs & scripting
+                "markdown", "markdown_inline", "vim", "vimdoc", "bash", "comment", "query",
             },
             
             -- =============================================================================
@@ -96,17 +82,9 @@ return {
             -- RAINBOW PARENTHESES
             -- =============================================================================
             rainbow = {
-                enable = true, -- Enable rainbow parentheses
-                extended_mode = true, -- Also highlight non-bracket delimiters
-                max_file_lines = nil, -- Disable for large files
-            },
-            
-            -- =============================================================================
-            -- CONTEXT COMMENTING
-            -- =============================================================================
-            context_commentstring = {
-                enable = true, -- Enable context-aware commenting
-                enable_autocmd = false, -- Disable auto-commands
+                enable = true,
+                extended_mode = true,
+                max_file_lines = 10000, -- Disable for large files (saves work)
             },
             
             -- =============================================================================
@@ -146,5 +124,8 @@ return {
                 },
             },
         })
+
+        -- nvim-ts-autotag: use standalone setup (treesitter autotag block is deprecated in 1.0.0)
+        require("nvim-ts-autotag").setup({})
     end
 }

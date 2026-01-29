@@ -4,94 +4,70 @@ return {
   config = function()
     local conform = require("conform")
 
+    -- Resolve at runtime so Mason-installed tools work after :MasonInstall
+    local mason = vim.fn.stdpath("data") .. "/mason/bin"
+    local function get_eslint_d_cmd()
+        local p = mason .. "/eslint_d"
+        return (vim.fn.executable(p) == 1) and p or "eslint_d"
+    end
+    local function get_prettier_cmd()
+        local p = mason .. "/prettier"
+        return (vim.fn.executable(p) == 1) and p or "prettier"
+    end
+    local function get_stylelint_cmd()
+        local p = mason .. "/stylelint"
+        return (vim.fn.executable(p) == 1) and p or "stylelint"
+    end
+
     conform.setup({
+      formatters = {
+        -- Resolved at config load; restart nvim after :MasonInstall for new tools
+        eslint_d = { command = get_eslint_d_cmd() },
+        prettier = { command = get_prettier_cmd() },
+        stylelint = { command = get_stylelint_cmd() },
+      },
       formatters_by_ft = {
-        -- =============================================================================
-        -- WEB DEVELOPMENT
-        -- =============================================================================
+        -- React, JS, Node
         javascript = { "prettier", "eslint_d" },
         typescript = { "prettier", "eslint_d" },
         javascriptreact = { "prettier", "eslint_d" },
         typescriptreact = { "prettier", "eslint_d" },
         jsx = { "prettier", "eslint_d" },
         tsx = { "prettier", "eslint_d" },
-        vue = { "prettier", "eslint_d" },
-        svelte = { "prettier", "eslint_d" },
-        
-        -- =============================================================================
-        -- STYLING
-        -- =============================================================================
+        -- Styling
         css = { "prettier", "stylelint" },
         scss = { "prettier", "stylelint" },
         sass = { "prettier", "stylelint" },
         less = { "prettier", "stylelint" },
-        stylus = { "prettier" },
-        
-        -- =============================================================================
-        -- MARKUP
-        -- =============================================================================
-        html = { "prettier", "htmlhint" },
-        htmldjango = { "prettier" },
-        erb = { "prettier" },
+        -- Markup (htmlhint is linter only; use nvim-lint for HTML linting)
+        html = { "prettier" },
         php = { "prettier" },
-        
-        -- =============================================================================
-        -- DATA FORMATS
-        -- =============================================================================
+        -- Data: JSON, YAML, XML, GraphQL, SQL
         json = { "prettier", "jsonlint" },
         jsonc = { "prettier" },
         yaml = { "prettier", "yamllint" },
         yml = { "prettier", "yamllint" },
         toml = { "prettier" },
         xml = { "prettier" },
-        
-        -- =============================================================================
-        -- DOCUMENTATION
-        -- =============================================================================
-        markdown = { "prettier" },
-        markdown_inline = { "prettier" },
-        mdx = { "prettier" },
-        
-        -- =============================================================================
-        -- QUERY LANGUAGES
-        -- =============================================================================
         graphql = { "prettier" },
         gql = { "prettier" },
         sql = { "sqlfluff" },
-        
-        -- =============================================================================
-        -- TEMPLATE LANGUAGES
-        -- =============================================================================
-        liquid = { "prettier" },
-        handlebars = { "prettier" },
-        hbs = { "prettier" },
-        
-        -- =============================================================================
-        -- BACKEND LANGUAGES
-        -- =============================================================================
+        -- Backend
         lua = { "stylua" },
         python = { "isort", "black" },
         go = { "gofumpt", "goimports" },
-        rust = { "rustfmt" },
-        java = { "google_java_format" },
-        kotlin = { "ktlint" },
-        scala = { "scalafmt" },
-        
-        -- =============================================================================
-        -- SHELL & SCRIPTING
-        -- =============================================================================
+        -- Docs
+        markdown = { "prettier" },
+        markdown_inline = { "prettier" },
+        mdx = { "prettier" },
+        -- Shell
         sh = { "shfmt" },
         bash = { "shfmt" },
         zsh = { "shfmt" },
-        fish = { "fish_indent" },
-        
-        -- =============================================================================
-        -- CONFIGURATION FILES
-        -- =============================================================================
-        dockerfile = { "hadolint" },
+        -- Docker, Terraform (hadolint is linter only; terraform_fmt needs Terraform CLI)
+        dockerfile = {},
         terraform = { "terraform_fmt" },
         hcl = { "terraform_fmt" },
-        nix = { "nixfmt" },
       },
       format_on_save = {
         lsp_fallback = true,

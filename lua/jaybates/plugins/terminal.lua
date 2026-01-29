@@ -98,28 +98,14 @@ return {
             })
         end
 
-        -- Function to create a tab terminal
-        local function new_tab_terminal()
-            local Terminal = require("toggleterm.terminal").Terminal
-            return Terminal:new({
-                direction = "tab",
-            })
-        end
-
         -- =============================================================================
         -- SPECIALIZED TERMINALS
         -- =============================================================================
         
-        -- Git terminal for git operations
+        -- Git terminal for git operations (LazyGit TUI is in terminal-extras: <leader>gg)
         local git_terminal = new_terminal()
         local function git_terminal_toggle()
             git_terminal:toggle()
-        end
-
-        -- LazyGit terminal
-        local lazygit_terminal = new_terminal()
-        local function lazygit_toggle()
-            lazygit_terminal:toggle()
         end
 
         -- Node.js REPL terminal
@@ -143,7 +129,6 @@ return {
         vim.keymap.set("n", "<leader>tf", "<cmd>ToggleTerm direction=float<cr>", { desc = "Toggle floating terminal" })
         vim.keymap.set("n", "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", { desc = "Toggle horizontal terminal" })
         vim.keymap.set("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", { desc = "Toggle vertical terminal" })
-        vim.keymap.set("n", "<leader>tT", "<cmd>ToggleTerm direction=tab<cr>", { desc = "Toggle tab terminal" })
 
         -- Multiple terminals
         vim.keymap.set("n", "<leader>t1", "<cmd>1ToggleTerm<cr>", { desc = "Toggle terminal 1" })
@@ -151,9 +136,8 @@ return {
         vim.keymap.set("n", "<leader>t3", "<cmd>3ToggleTerm<cr>", { desc = "Toggle terminal 3" })
         vim.keymap.set("n", "<leader>t4", "<cmd>4ToggleTerm<cr>", { desc = "Toggle terminal 4" })
 
-        -- Specialized terminals
+        -- Specialized terminals (LazyGit: <leader>gg in terminal-extras)
         vim.keymap.set("n", "<leader>tg", git_terminal_toggle, { desc = "Toggle git terminal" })
-        vim.keymap.set("n", "<leader>tl", lazygit_toggle, { desc = "Toggle lazygit" })
         vim.keymap.set("n", "<leader>tn", node_toggle, { desc = "Toggle node REPL" })
         vim.keymap.set("n", "<leader>tp", python_toggle, { desc = "Toggle python REPL" })
 
@@ -189,7 +173,7 @@ return {
             nargs = "?",
             desc = "Open terminal or execute command",
             complete = function()
-                return { "float", "horizontal", "vertical", "tab" }
+                return { "float", "horizontal", "vertical" }
             end,
         })
 
@@ -202,7 +186,7 @@ return {
             nargs = "?",
             desc = "Create new terminal",
             complete = function()
-                return { "float", "horizontal", "vertical", "tab" }
+                return { "float", "horizontal", "vertical" }
             end,
         })
 
@@ -218,18 +202,6 @@ return {
             end,
         })
 
-        -- Integration with LSP
-        vim.api.nvim_create_autocmd("LspAttach", {
-            callback = function()
-                local client = vim.lsp.get_client_by_id(event.data.client_id)
-                if client and client.name == "pyright" then
-                    -- Python-specific terminal setup
-                    python_terminal:spawn()
-                elseif client and (client.name == "ts_ls" or client.name == "typescript-language-server") then
-                    -- TypeScript-specific terminal setup
-                    node_terminal:spawn()
-                end
-            end,
-        })
+        -- REPLs: use <leader>tn (Node) or <leader>tp (Python) when you want them (no auto-spawn on LspAttach; termopen requires unmodified buffer and caused errors)
     end,
 }

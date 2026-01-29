@@ -26,7 +26,6 @@ local external_dependencies = {
     node = "node",           -- For JavaScript/TypeScript LSP
     python3 = "python3",     -- For Python LSP
     go = "go",               -- For Go LSP
-    rustc = "rustc",         -- For Rust LSP
 }
 
 -- Package manager commands for different systems

@@ -28,39 +28,6 @@ return {
     },
 
     -- =============================================================================
-    -- FLOATING TERMINAL ENHANCEMENTS
-    -- =============================================================================
-    {
-        "voldikss/vim-floaterm",
-        event = "VeryLazy",
-        config = function()
-            -- Floaterm configuration
-            vim.g.floaterm_wintype = "floating"
-            vim.g.floaterm_position = "center"
-            vim.g.floaterm_width = 0.8
-            vim.g.floaterm_height = 0.8
-            vim.g.floaterm_borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
-            vim.g.floaterm_title = "Terminal $1/$2"
-            vim.g.floaterm_autoclose = 1
-            vim.g.floaterm_autoinsert = 1
-            vim.g.floaterm_autohide = 1
-            vim.g.floaterm_opener = "edit"
-
-            -- Key mappings
-            vim.keymap.set("n", "<leader>ft", "<cmd>FloatermToggle<cr>", { desc = "Toggle floaterm" })
-            vim.keymap.set("n", "<leader>fn", "<cmd>FloatermNew<cr>", { desc = "New floaterm" })
-            vim.keymap.set("n", "<leader>fk", "<cmd>FloatermKill<cr>", { desc = "Kill floaterm" })
-            vim.keymap.set("n", "<leader>fp", "<cmd>FloatermPrev<cr>", { desc = "Previous floaterm" })
-            vim.keymap.set("n", "<leader>fn", "<cmd>FloatermNext<cr>", { desc = "Next floaterm" })
-            vim.keymap.set("n", "<leader>fs", "<cmd>FloatermShow<cr>", { desc = "Show floaterm" })
-            vim.keymap.set("n", "<leader>fh", "<cmd>FloatermHide<cr>", { desc = "Hide floaterm" })
-
-            -- Terminal mode mappings
-            vim.keymap.set("t", "<C-\\>", "<cmd>FloatermToggle<cr>", { desc = "Toggle floaterm" })
-        end,
-    },
-
-    -- =============================================================================
     -- TERMINAL BUFFER MANAGEMENT
     -- =============================================================================
     {
@@ -122,14 +89,4 @@ return {
         end,
     },
 
-    -- =============================================================================
-    -- QUICK COMMAND EXECUTION (Startify disabled - using doom-dashboard as startup)
-    -- =============================================================================
-    -- vim-startify removed so the Doom-style dashboard (alpha-nvim in doom-dashboard.lua)
-    -- is the only startup screen. Re-enable this block if you want Startify back.
-    -- {
-    --     "mhinz/vim-startify",
-    --     event = "VimEnter",
-    --     ...
-    -- },
 }

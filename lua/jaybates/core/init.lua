@@ -41,3 +41,32 @@ vim.api.nvim_create_autocmd("VimEnter", {
         end, 1000)
     end,
 })
+
+-- =============================================================================
+-- PROJECT LAYOUT: [nvim-tree | placeholder] when opening a directory
+-- =============================================================================
+-- When you open a project with `nvim .` or `nvim project-dir`, open nvim-tree
+-- and a placeholder buffer so the layout is stable. Opening a file from Telescope
+-- then replaces the placeholder (no resize/flash).
+vim.api.nvim_create_autocmd("VimEnter", {
+    once = true,
+    callback = function()
+        if vim.fn.argc() ~= 1 then return end
+        local arg = vim.fn.argv(0)
+        if arg == "" or vim.fn.isdirectory(arg) ~= 1 then return end
+
+        vim.defer_fn(function()
+            local ok, api = pcall(require, "nvim-tree.api")
+            if not ok or not api then return end
+
+            api.tree.open()
+            vim.schedule(function()
+                local wins = vim.api.nvim_list_wins()
+                if #wins == 1 then
+                    vim.cmd("vsplit")
+                    vim.cmd("enew")
+                end
+            end)
+        end, 150)
+    end,
+})

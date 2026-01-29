@@ -6,21 +6,15 @@
 
 return {
   "williamboman/mason.nvim",
+  priority = 200, -- Before nvim-lspconfig so Mason is ready when LSP attaches
   dependencies = {
-    "williamboman/mason-lspconfig.nvim", -- Bridge between Mason and lspconfig
+    "williamboman/mason-lspconfig.nvim", -- Bridge (configured in nvim-lspconfig.lua to avoid load loop)
     "WhoIsSethDaniel/mason-tool-installer.nvim", -- Install additional tools
   },
   config = function()
-    -- =============================================================================
-    -- PLUGIN IMPORTS
-    -- =============================================================================
     local mason = require("mason")
-    local mason_lspconfig = require("mason-lspconfig")
     local mason_tool_installer = require("mason-tool-installer")
 
-    -- =============================================================================
-    -- MASON SETUP
-    -- =============================================================================
     mason.setup({
       -- =============================================================================
       -- UI CONFIGURATION
@@ -56,91 +50,39 @@ return {
       },
     })
 
-    -- =============================================================================
-    -- MASON LSPCONFIG SETUP
-    -- =============================================================================
-    mason_lspconfig.setup({
-      -- =============================================================================
-      -- LANGUAGE SERVERS TO INSTALL
-      -- =============================================================================
-      ensure_installed = {
-        -- Web Development
-        "ts_ls",           -- TypeScript/JavaScript language server (formerly tsserver)
-        "html",            -- HTML language server
-        "cssls",           -- CSS language server
-        "tailwindcss",     -- Tailwind CSS language server
-        "emmet_ls",        -- Emmet language server for HTML/CSS
-        
-        -- Backend Development
-        "lua_ls",          -- Lua language server
-        "graphql",         -- GraphQL language server
-        "jsonls",          -- JSON language server
-        "yamlls",          -- YAML language server
-        
-        -- Additional Languages (uncomment as needed)
-        -- "pyright",       -- Python language server
-        -- "gopls",         -- Go language server
-        -- "rust_analyzer", -- Rust language server
-        -- "clangd",        -- C/C++ language server
-      },
-      
-      -- =============================================================================
-      -- AUTOMATIC SERVER SETUP
-      -- =============================================================================
-      automatic_installation = true, -- Automatically install servers when needed
-    })
-
+    -- LSP server list is in nvim-lspconfig.lua (mason_lspconfig.setup) to avoid load loop
     -- =============================================================================
     -- MASON TOOL INSTALLER SETUP
     -- =============================================================================
     mason_tool_installer.setup({
       -- =============================================================================
-      -- FORMATTERS & LINTERS TO INSTALL
+      -- FORMATTERS & LINTERS TO INSTALL (stylelint: install with npm i -g stylelint if needed)
       -- =============================================================================
       ensure_installed = {
-        -- =============================================================================
-        -- WEB DEVELOPMENT FORMATTERS
-        -- =============================================================================
-        "prettier",        -- Universal code formatter
-        "prettierd",       -- Prettier daemon (faster)
-        "eslint_d",        -- JavaScript/TypeScript linter (daemonized)
-        "stylelint",       -- CSS/SCSS linter
-        "htmlhint",        -- HTML linter
-        "jsonlint",        -- JSON linter
-        "yamllint",        -- YAML linter
-        
-        -- =============================================================================
-        -- BACKEND FORMATTERS
-        -- =============================================================================
-        "stylua",          -- Lua formatter
-        "black",           -- Python formatter
-        "isort",           -- Python import sorter
-        "flake8",          -- Python linter
-        "pylint",          -- Python linter
-        "gofumpt",         -- Go formatter
-        "golangci_lint",   -- Go linter
-        "rustfmt",         -- Rust formatter
-        "cargo_check",     -- Rust linter
-        
-        -- =============================================================================
-        -- SHELL & SCRIPTING
-        -- =============================================================================
-        "shellcheck",      -- Shell script linter
-        "shfmt",           -- Shell formatter
-        "luacheck",        -- Lua linter
-        
-        -- =============================================================================
-        -- ADDITIONAL WEB DEV TOOLS
-        -- =============================================================================
-        "typescript-language-server", -- TypeScript LSP
-        "tailwindcss-language-server", -- Tailwind CSS LSP
-        "volar",           -- Vue Language Server
-        "svelte-language-server", -- Svelte LSP
-        "emmet-ls",        -- Emmet language server
-        "css-lsp",         -- CSS language server
-        "html-lsp",        -- HTML language server
-        "json-lsp",        -- JSON language server
-        "yaml-language-server", -- YAML LSP
+        -- Web: React, JS, Node
+        "prettier",
+        "prettierd",
+        "eslint_d",
+        "htmlhint",
+        -- Data
+        "jsonlint",
+        "yamllint",
+        -- Backend
+        "stylua",
+        "black",
+        "isort",
+        "flake8",
+        "pylint",
+        "gofumpt",
+        "golangci-lint",
+        -- PHP, Docker, Terraform, SQL
+        "phpcs",           -- PHP code standards (lint)
+        "hadolint",        -- Dockerfile linter
+        "sqlfluff",        -- SQL formatter/linter
+        -- Shell & config
+        "shellcheck",
+        "shfmt",
+        "luacheck",
       },
       
       -- =============================================================================

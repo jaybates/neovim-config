@@ -9,78 +9,54 @@
 -- =============================================================================
 
 -- =============================================================================
--- TELESCOPE KEY MAPPINGS
+-- TELESCOPE KEY MAPPINGS (cmd strings so Telescope loads on first use)
 -- =============================================================================
 local function setup_telescope_mappings()
-  -- Check if telescope is available
-  local telescope_ok, builtin = pcall(require, 'telescope.builtin')
-  if not telescope_ok then
-    vim.notify("Telescope not available, skipping telescope keymaps", "warn")
-    return
-  end
-  
   local keymap = vim.keymap
-
   -- File operations
-  keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
-  keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Live grep" })
-  keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find buffers" })
-  keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Find help tags" })
-  keymap.set("n", "<leader>fr", builtin.oldfiles, { desc = "Find recent files" })
-  keymap.set("n", "<leader>fc", builtin.grep_string, { desc = "Find string under cursor" })
-  
+  keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
+  keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live grep" })
+  keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find buffers" })
+  keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Find help tags" })
+  keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Find recent files" })
+  keymap.set("n", "<leader>fc", "<cmd>Telescope grep_string<cr>", { desc = "Find string under cursor" })
   -- Git operations
-  keymap.set("n", "<leader>gs", builtin.git_status, { desc = "Git status" })
-  keymap.set("n", "<leader>gb", builtin.git_branches, { desc = "Git branches" })
-  keymap.set("n", "<leader>gc", builtin.git_commits, { desc = "Git commits" })
-  
+  keymap.set("n", "<leader>gs", "<cmd>Telescope git_status<cr>", { desc = "Git status" })
+  keymap.set("n", "<leader>gb", "<cmd>Telescope git_branches<cr>", { desc = "Git branches" })
+  keymap.set("n", "<leader>gc", "<cmd>Telescope git_commits<cr>", { desc = "Git commits" })
   -- LSP operations
-  keymap.set("n", "<leader>gd", builtin.lsp_definitions, { desc = "LSP definitions" })
-  keymap.set("n", "<leader>gr", builtin.lsp_references, { desc = "LSP references" })
-  keymap.set("n", "<leader>gi", builtin.lsp_implementations, { desc = "LSP implementations" })
-  keymap.set("n", "<leader>gt", builtin.lsp_type_definitions, { desc = "LSP type definitions" })
-  keymap.set("n", "<leader>ds", builtin.lsp_document_symbols, { desc = "LSP document symbols" })
-  keymap.set("n", "<leader>ws", builtin.lsp_workspace_symbols, { desc = "LSP workspace symbols" })
+  keymap.set("n", "<leader>gd", "<cmd>Telescope lsp_definitions<cr>", { desc = "LSP definitions" })
+  keymap.set("n", "<leader>gr", "<cmd>Telescope lsp_references<cr>", { desc = "LSP references" })
+  keymap.set("n", "<leader>gi", "<cmd>Telescope lsp_implementations<cr>", { desc = "LSP implementations" })
+  keymap.set("n", "<leader>gt", "<cmd>Telescope lsp_type_definitions<cr>", { desc = "LSP type definitions" })
+  keymap.set("n", "<leader>ds", "<cmd>Telescope lsp_document_symbols<cr>", { desc = "LSP document symbols" })
+  keymap.set("n", "<leader>ws", "<cmd>Telescope lsp_workspace_symbols<cr>", { desc = "LSP workspace symbols" })
 end
 
 -- =============================================================================
--- TROUBLE KEY MAPPINGS
+-- TROUBLE KEY MAPPINGS (cmd strings so Trouble loads on first use)
 -- =============================================================================
 local function setup_trouble_mappings()
-  local trouble_ok = pcall(require, 'trouble')
-  if not trouble_ok then
-    vim.notify("Trouble not available, skipping trouble keymaps", "warn")
-    return
-  end
-  
   local keymap = vim.keymap
-  
-  keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<CR>", { desc = "Toggle trouble" })
-  keymap.set("n", "<leader>xw", "<cmd>TroubleToggle workspace_diagnostics<CR>", { desc = "Workspace diagnostics" })
-  keymap.set("n", "<leader>xd", "<cmd>TroubleToggle document_diagnostics<CR>", { desc = "Document diagnostics" })
-  keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<CR>", { desc = "Quickfix list" })
-  keymap.set("n", "<leader>xl", "<cmd>TroubleToggle loclist<CR>", { desc = "Location list" })
-  keymap.set("n", "<leader>xt", "<cmd>TodoTrouble<CR>", { desc = "Todo trouble" })
+  keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<cr>", { desc = "Toggle trouble" })
+  keymap.set("n", "<leader>xw", "<cmd>TroubleToggle workspace_diagnostics<cr>", { desc = "Workspace diagnostics" })
+  keymap.set("n", "<leader>xd", "<cmd>TroubleToggle document_diagnostics<cr>", { desc = "Document diagnostics" })
+  keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>", { desc = "Quickfix list" })
+  keymap.set("n", "<leader>xl", "<cmd>TroubleToggle loclist<cr>", { desc = "Location list" })
+  keymap.set("n", "<leader>xt", "<cmd>TodoTrouble<cr>", { desc = "Todo trouble" })
 end
 
 -- =============================================================================
--- HARPOON KEY MAPPINGS
+-- HARPOON KEY MAPPINGS (cmd strings so Harpoon loads on first use)
 -- =============================================================================
 local function setup_harpoon_mappings()
-  local harpoon_ok = pcall(require, 'harpoon')
-  if not harpoon_ok then
-    vim.notify("Harpoon not available, skipping harpoon keymaps", "warn")
-    return
-  end
-  
   local keymap = vim.keymap
-  
-  keymap.set("n", "<leader>ha", "<cmd>lua require('harpoon.mark').add_file()<CR>", { desc = "Add file to harpoon" })
-  keymap.set("n", "<leader>hh", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<CR>", { desc = "Toggle harpoon menu" })
-  keymap.set("n", "<leader>h1", "<cmd>lua require('harpoon.ui').nav_file(1)<CR>", { desc = "Navigate to file 1" })
-  keymap.set("n", "<leader>h2", "<cmd>lua require('harpoon.ui').nav_file(2)<CR>", { desc = "Navigate to file 2" })
-  keymap.set("n", "<leader>h3", "<cmd>lua require('harpoon.ui').nav_file(3)<CR>", { desc = "Navigate to file 3" })
-  keymap.set("n", "<leader>h4", "<cmd>lua require('harpoon.ui').nav_file(4)<CR>", { desc = "Navigate to file 4" })
+  keymap.set("n", "<leader>ha", "<cmd>lua require('harpoon.mark').add_file()<cr>", { desc = "Add file to harpoon" })
+  keymap.set("n", "<leader>hh", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", { desc = "Toggle harpoon menu" })
+  keymap.set("n", "<leader>h1", "<cmd>lua require('harpoon.ui').nav_file(1)<cr>", { desc = "Navigate to file 1" })
+  keymap.set("n", "<leader>h2", "<cmd>lua require('harpoon.ui').nav_file(2)<cr>", { desc = "Navigate to file 2" })
+  keymap.set("n", "<leader>h3", "<cmd>lua require('harpoon.ui').nav_file(3)<cr>", { desc = "Navigate to file 3" })
+  keymap.set("n", "<leader>h4", "<cmd>lua require('harpoon.ui').nav_file(4)<cr>", { desc = "Navigate to file 4" })
 end
 
 -- =============================================================================
@@ -97,100 +73,48 @@ local function setup_lsp_mappings()
   
   -- Diagnostics
   keymap.set("n", "<leader>d", vim.diagnostic.open_float, { desc = "Show line diagnostics" })
-  keymap.set("n", "<leader>D", function()
-    local telescope_ok, builtin = pcall(require, 'telescope.builtin')
-    if telescope_ok then
-      builtin.diagnostics({ bufnr = 0 })
-    else
-      vim.diagnostic.open_float()
-    end
-  end, { desc = "Show buffer diagnostics" })
+  keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<cr>", { desc = "Show buffer diagnostics" })
   keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
   keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
 end
 
 -- =============================================================================
--- FORMATTING KEY MAPPINGS
+-- FORMATTING KEY MAPPINGS (cmd lua so Conform loads on first use)
 -- =============================================================================
 local function setup_formatting_mappings()
-  local conform_ok = pcall(require, 'conform')
-  if not conform_ok then
-    vim.notify("Conform not available, skipping formatting keymaps", "warn")
-    return
-  end
-  
   local keymap = vim.keymap
-  
-  keymap.set("n", "<leader>mp", function()
-    require("conform").format({
-      lsp_fallback = true,
-      async = false,
-      timeout_ms = 1000,
-    })
-  end, { desc = "Format file" })
-  
-  keymap.set("v", "<leader>mp", function()
-    require("conform").format({
-      lsp_fallback = true,
-      async = false,
-      timeout_ms = 1000,
-    })
-  end, { desc = "Format selection" })
+  local fmt_cmd = "lua require('conform').format({ lsp_fallback = true, async = false, timeout_ms = 1000 })"
+  keymap.set("n", "<leader>mp", "<cmd>" .. fmt_cmd .. "<cr>", { desc = "Format file" })
+  keymap.set("v", "<leader>mp", "<cmd>" .. fmt_cmd .. "<cr>", { desc = "Format selection" })
 end
 
 -- =============================================================================
--- COMMENT KEY MAPPINGS
+-- COMMENT KEY MAPPINGS (cmd lua so Comment loads on first use)
 -- =============================================================================
 local function setup_comment_mappings()
-  local comment_ok = pcall(require, 'Comment.api')
-  if not comment_ok then
-    vim.notify("Comment not available, skipping comment keymaps", "warn")
-    return
-  end
-  
   local keymap = vim.keymap
-  
-  keymap.set("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", { desc = "Toggle comment" })
-  keymap.set("v", "<leader>/", "<ESC><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", { desc = "Toggle comment" })
+  keymap.set("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<cr>", { desc = "Toggle comment" })
+  keymap.set("v", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<cr>", { desc = "Toggle comment" })
 end
 
 -- =============================================================================
--- SUBSTITUTE KEY MAPPINGS
+-- SUBSTITUTE KEY MAPPINGS (cmd lua so Substitute loads on first use)
 -- =============================================================================
 local function setup_substitute_mappings()
-  local substitute_ok = pcall(require, 'substitute')
-  if not substitute_ok then
-    vim.notify("Substitute not available, skipping substitute keymaps", "warn")
-    return
-  end
-  
   local keymap = vim.keymap
-  
-  keymap.set("n", "s", "<cmd>lua require('substitute').operator()<CR>", { desc = "Substitute with motion" })
-  keymap.set("n", "ss", "<cmd>lua require('substitute').line()<CR>", { desc = "Substitute line" })
-  keymap.set("n", "S", "<cmd>lua require('substitute').eol()<CR>", { desc = "Substitute to end of line" })
-  keymap.set("x", "s", "<cmd>lua require('substitute').visual()<CR>", { desc = "Substitute in visual mode" })
+  keymap.set("n", "s", "<cmd>lua require('substitute').operator()<cr>", { desc = "Substitute with motion" })
+  keymap.set("n", "ss", "<cmd>lua require('substitute').line()<cr>", { desc = "Substitute line" })
+  keymap.set("n", "S", "<cmd>lua require('substitute').eol()<cr>", { desc = "Substitute to end of line" })
+  keymap.set("x", "s", "<cmd>lua require('substitute').visual()<cr>", { desc = "Substitute in visual mode" })
 end
 
 -- =============================================================================
--- TODO COMMENTS KEY MAPPINGS
+-- TODO COMMENTS KEY MAPPINGS (cmd lua so Todo-comments loads on first use)
 -- =============================================================================
 local function setup_todo_mappings()
-  local todo_ok = pcall(require, 'todo-comments')
-  if not todo_ok then
-    vim.notify("Todo-comments not available, skipping todo keymaps", "warn")
-    return
-  end
-  
   local keymap = vim.keymap
-  
-  keymap.set("n", "]t", function()
-    require("todo-comments").jump_next()
-  end, { desc = "Next todo comment" })
-  
-  keymap.set("n", "[t", function()
-    require("todo-comments").jump_prev()
-  end, { desc = "Previous todo comment" })
+  keymap.set("n", "]t", "<cmd>lua require('todo-comments').jump_next()<cr>", { desc = "Next todo comment" })
+  keymap.set("n", "[t", "<cmd>lua require('todo-comments').jump_prev()<cr>", { desc = "Previous todo comment" })
 end
 
 -- =============================================================================
@@ -207,9 +131,8 @@ local function setup_all_mappings()
   setup_todo_mappings()
 end
 
--- Set up mappings when this module is loaded
--- Use a deferred call to ensure plugins are loaded
-vim.defer_fn(setup_all_mappings, 100)
+-- Set up mappings after core is ready (keymaps use cmd strings so plugins load on first use)
+vim.defer_fn(setup_all_mappings, 0)
 
 return {
   setup_telescope_mappings = setup_telescope_mappings,

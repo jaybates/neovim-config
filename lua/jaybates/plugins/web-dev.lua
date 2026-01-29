@@ -84,7 +84,7 @@ return {
   },
 
   -- =============================================================================
-  -- HTML & MARKUP
+  -- HTML & MARKUP (auto-close tags; parsers from treesitter)
   -- =============================================================================
   {
     "windwp/nvim-ts-autotag",
@@ -97,42 +97,13 @@ return {
           "typescript",
           "javascriptreact",
           "typescriptreact",
-          "svelte",
-          "vue",
           "tsx",
           "jsx",
-          "rescript",
           "xml",
           "php",
           "markdown",
-          "astro",
-          "glimmer",
-          "handlebars",
-          "hbs",
         },
       })
-    end,
-  },
-
-  -- =============================================================================
-  -- VUE.JS SUPPORT
-  -- =============================================================================
-  {
-    "posva/vim-vue",
-    event = "VeryLazy",
-    config = function()
-      vim.g.vue_pre_processors = "detect"
-    end,
-  },
-
-  -- =============================================================================
-  -- SVELTE SUPPORT
-  -- =============================================================================
-  {
-    "evanleck/vim-svelte",
-    event = "VeryLazy",
-    config = function()
-      vim.g.svelte_preprocessors = "typescript"
     end,
   },
 

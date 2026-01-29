@@ -43,11 +43,14 @@ vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, { desc = "Open file explorer" })
 -- =============================================================================
 -- BUFFER MANAGEMENT
 -- =============================================================================
+-- Switch between open files: Shift+h (previous buffer), Shift+l (next buffer).
+-- Or click a buffer in the bufferline at the top. Window nav: Ctrl+h/j/k/l.
 
 -- Buffer navigation
 vim.keymap.set("n", "<S-h>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
 vim.keymap.set("n", "<S-l>", "<cmd>bnext<CR>", { desc = "Next buffer" })
-vim.keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Delete buffer" })
+-- Close current buffer (only this buffer; use bufferline or Shift+h/l to switch)
+vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Close buffer" })
 vim.keymap.set("n", "<leader>ba", "<cmd>%bd<CR>", { desc = "Delete all buffers" })
 
 -- =============================================================================
@@ -99,7 +102,6 @@ vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<cr>", { desc = "Toggle termin
 vim.keymap.set("n", "<leader>tf", "<cmd>ToggleTerm direction=float<cr>", { desc = "Toggle floating terminal" })
 vim.keymap.set("n", "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", { desc = "Toggle horizontal terminal" })
 vim.keymap.set("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", { desc = "Toggle vertical terminal" })
-vim.keymap.set("n", "<leader>tT", "<cmd>ToggleTerm direction=tab<cr>", { desc = "Toggle tab terminal" })
 
 -- Multiple terminals
 vim.keymap.set("n", "<leader>t1", "<cmd>1ToggleTerm<cr>", { desc = "Toggle terminal 1" })
@@ -107,8 +109,7 @@ vim.keymap.set("n", "<leader>t2", "<cmd>2ToggleTerm<cr>", { desc = "Toggle termi
 vim.keymap.set("n", "<leader>t3", "<cmd>3ToggleTerm<cr>", { desc = "Toggle terminal 3" })
 vim.keymap.set("n", "<leader>t4", "<cmd>4ToggleTerm<cr>", { desc = "Toggle terminal 4" })
 
--- Specialized terminals
-vim.keymap.set("n", "<leader>tg", "<cmd>LazyGit<cr>", { desc = "Open LazyGit" })
+-- Specialized terminals (LazyGit: <leader>gg from lazygit.nvim in terminal-extras)
 vim.keymap.set("n", "<leader>tn", function()
     local Terminal = require("toggleterm.terminal").Terminal
     local node_terminal = Terminal:new({ direction = "float" })

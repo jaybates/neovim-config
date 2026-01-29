@@ -1,8 +1,10 @@
 -- =============================================================================
 -- Lazy.nvim Plugin Manager Configuration
 -- =============================================================================
--- This file sets up lazy.nvim as the plugin manager for Neovim
--- Lazy.nvim provides lazy loading, dependency management, and performance optimization
+-- Load order: init.lua → jaybates → core (options, keyremaps, keymaps, dependency_installer)
+--            → lazy (this file). Plugins load by priority then by event/cmd/keys.
+-- Priority order (higher = earlier): plenary 1000, colorscheme 1000, Mason 200,
+--            treesitter 150, nvim-lspconfig 100. Rest use default (50).
 
 -- =============================================================================
 -- LAZY.NVIM INSTALLATION
@@ -14,17 +16,18 @@ if not vim.loop.fs_stat(lazypath) then
     "clone",
     "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- Use stable branch for reliability
+    "--branch=stable",
     lazypath,
   })
 end
 vim.opt.rtp:prepend(lazypath)
 
 -- =============================================================================
--- LAZY.NVIM SETUP
+-- LAZY.NVIM SETUP (import order: plugins first, then lsp so base deps load first)
 -- =============================================================================
-require("lazy").setup({ 
-  { import = "jaybates.plugins" } -- Import all plugins from the plugins directory
+require("lazy").setup({
+  { import = "jaybates.plugins" },
+  { import = "jaybates.plugins.lsp" },
 }, {
   -- =============================================================================
   -- PERFORMANCE & OPTIMIZATION

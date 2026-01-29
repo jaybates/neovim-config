@@ -1,7 +1,9 @@
 return {
   "neovim/nvim-lspconfig",
+  priority = 100, -- After Mason (200); LSP config runs when buffer opens
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
+    "williamboman/mason-lspconfig.nvim", -- LSP server list + handlers; load before requiring
     "hrsh7th/cmp-nvim-lsp",
     { "antosha417/nvim-lsp-file-operations", config = true },
     { "folke/neodev.nvim", opts = {} },
@@ -70,106 +72,76 @@ return {
     -- used to enable autocompletion (assign to every lsp server config)
     local capabilities = cmp_nvim_lsp.default_capabilities()
 
-    -- Change the Diagnostic symbols in the sign column (gutter)
-    -- (not in youtube nvim video)
-    local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
-    for type, icon in pairs(signs) do
-      local hl = "DiagnosticSign" .. type
-      vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-    end
+    -- Diagnostic config: signs + performance (no updates while typing, virtual text only for WARN+)
+    vim.diagnostic.config({
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = " ",
+          [vim.diagnostic.severity.WARN]  = " ",
+          [vim.diagnostic.severity.HINT]  = " ",
+          [vim.diagnostic.severity.INFO]  = " ",
+        },
+      },
+      update_in_insert = false,   -- Don't refresh diagnostics while typing (lighter)
+      virtual_text = { severity = { min = vim.diagnostic.severity.WARN } }, -- Only show inline text for WARN/ERROR
+    })
 
-    mason_lspconfig.setup_handlers({
-      -- default handler for installed servers
-      function(server_name)
-        -- Skip ts_ls and tsserver as they're handled by typescript-tools.nvim
-        if server_name == "ts_ls" or server_name == "tsserver" then
-          return
-        end
-        -- Use the new vim.lsp.config API (Neovim 0.11+)
-        -- Convert server_name to the correct format (e.g., "lua_ls" -> vim.lsp.config.lua_ls)
-        local config = vim.lsp.config[server_name]
-        if config then
-          config.setup({
+    -- LSP server list lives here to avoid mason.lua requiring mason-lspconfig (load loop)
+    mason_lspconfig.setup({
+      ensure_installed = {
+        "ts_ls", "html", "cssls", "tailwindcss", "emmet_ls",
+        "graphql", "jsonls", "yamlls",
+        "lua_ls", "pyright", "gopls", "intelephense",
+        "dockerls", "terraformls",
+      },
+      automatic_installation = true,
+      handlers = {
+        -- Default handler for installed servers
+        function(server_name)
+          if server_name == "ts_ls" or server_name == "tsserver" then
+            return
+          end
+          local config = vim.lsp.config[server_name]
+          if config then
+            config.setup({ capabilities = capabilities })
+          end
+        end,
+        ["ts_ls"] = function() end,
+        ["tsserver"] = function() end,
+        ["graphql"] = function()
+          vim.lsp.config.graphql.setup({
             capabilities = capabilities,
+            filetypes = { "graphql", "gql", "typescriptreact", "javascriptreact" },
           })
-        end
-      end,
-      -- Explicitly skip ts_ls to avoid conflicts with typescript-tools.nvim
-      ["ts_ls"] = function()
-        -- ts_ls is configured by typescript-tools.nvim plugin
-        -- This handler prevents the default handler from running
-      end,
-      -- Handle deprecated tsserver name (redirects to ts_ls)
-      ["tsserver"] = function()
-        -- tsserver is deprecated, handled by typescript-tools.nvim
-        -- This handler prevents the default handler and deprecation warning
-      end,
-      ["svelte"] = function()
-        -- configure svelte server using new API
-        vim.lsp.config.svelte.setup({
-          capabilities = capabilities,
-          on_attach = function(client, bufnr)
-            vim.api.nvim_create_autocmd("BufWritePost", {
-              pattern = { "*.js", "*.ts" },
-              callback = function(ctx)
-                -- Here use ctx.match instead of ctx.file
-                client.notify("$/onDidChangeTsOrJsFile", { uri = ctx.match })
-              end,
-            })
-          end,
-        })
-      end,
-      ["graphql"] = function()
-        -- configure graphql language server using new API
-        vim.lsp.config.graphql.setup({
-          capabilities = capabilities,
-          filetypes = { "graphql", "gql", "svelte", "typescriptreact", "javascriptreact" },
-        })
-      end,
-      ["emmet_ls"] = function()
-        -- configure emmet language server using new API
-        vim.lsp.config.emmet_ls.setup({
-          capabilities = capabilities,
-          filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
-        })
-      end,
-      ["lua_ls"] = function()
-        -- configure lua server (with special settings) using new API
-        vim.lsp.config.lua_ls.setup({
-          capabilities = capabilities,
-          settings = {
-            Lua = {
-              -- make the language server recognize "vim" global
-              diagnostics = {
-                globals = { "vim" },
-              },
-              completion = {
-                callSnippet = "Replace",
+        end,
+        ["emmet_ls"] = function()
+          vim.lsp.config.emmet_ls.setup({
+            capabilities = capabilities,
+            filetypes = { "html", "htmldjango", "php", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less" },
+          })
+        end,
+        ["lua_ls"] = function()
+          vim.lsp.config.lua_ls.setup({
+            capabilities = capabilities,
+            settings = {
+              Lua = {
+                diagnostics = { globals = { "vim" } },
+                completion = { callSnippet = "Replace" },
               },
             },
-          },
-        })
-      end,
-      ["jsonls"] = function()
-        -- configure json language server with schemastore support
-        local schemastore_ok, schemastore = pcall(require, "schemastore")
-        local jsonls_config = {
-          capabilities = capabilities,
-        }
-        
-        if schemastore_ok then
-          jsonls_config.settings = {
-            json = {
-              schemas = schemastore.json.schemas(),
-              validate = { enable = true },
-            },
-          }
-        end
-        
-        -- Use require("lspconfig") for now as vim.lsp.config API is still evolving
-        local lspconfig = require("lspconfig")
-        lspconfig.jsonls.setup(jsonls_config)
-      end,
+          })
+        end,
+        ["jsonls"] = function()
+          local schemastore_ok, schemastore = pcall(require, "schemastore")
+          local jsonls_config = { capabilities = capabilities }
+          if schemastore_ok then
+            jsonls_config.settings = {
+              json = { schemas = schemastore.json.schemas(), validate = { enable = true } },
+            }
+          end
+          require("lspconfig").jsonls.setup(jsonls_config)
+        end,
+      },
     })
   end,
 }
