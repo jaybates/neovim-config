@@ -24,22 +24,7 @@ A practical guide to using this Neovim configuration as your primary IDE for nav
 
 ### Dashboard (Startup Screen)
 
-On launch you see the Doom-style dashboard with:
-
-- **Recent files** – last 5 edited files
-- **Quick actions** – same as the buttons below
-
-| Key | Action |
-|-----|--------|
-| `e` | New file |
-| `f` | Find files (Telescope) |
-| `g` | Live grep |
-| `r` | Recent files |
-| `p` | Projects |
-| `t` | File tree (NvimTree) |
-| `s` | Sessions |
-| `c` | Open Neovim config |
-| `q` | Quit |
+When you start Neovim with no file or directory (`nvim`), you see the **Alpha** dashboard with a custom NEOVIM ASCII header and default quick-action buttons. The dashboard only appears when `argc() == 0` so it doesn’t interfere when you open a file or directory.
 
 ### Discovering Keybindings
 
@@ -73,7 +58,7 @@ Primary way to open and search files:
 | `<Space>fr` | **Recent files** – recently opened files |
 | `<Space>fc` | **Grep string** – search for word under cursor |
 
-**Inside Telescope:**
+**Inside Telescope:** Results are shown in a **horizontal** layout (results left, preview right). Find files and recent files open in the main editor window (or a split if only Nvim-tree is visible) to avoid layout flash.
 
 | Key | Action |
 |-----|--------|
@@ -90,9 +75,11 @@ Primary way to open and search files:
 
 | Key | Action |
 |-----|--------|
-| `<Space>p` | **Projects** – list detected projects (`.git`, `package.json`, etc.) and switch into one |
+| `<Space>p` | **Projects** – list detected projects (`.git`, `package.json`, `pyproject.toml`, etc.) and switch into one |
 
 Use this to jump between projects; cwd updates when you pick a project.
+
+**Opening a directory:** When you start Neovim with a directory (`nvim .` or `nvim project-dir`), the config opens Nvim-tree and a placeholder buffer so that opening a file from Telescope replaces the placeholder without layout flash.
 
 ### Classic File Explorer
 
@@ -104,16 +91,16 @@ Use this to jump between projects; cwd updates when you pick a project.
 
 ## Buffer & Window Management
 
-### Buffers (Tabs)
+### Buffers (Bufferline)
 
-The **bufferline** at the top shows open buffers as tabs.
+The **bufferline** at the top shows **buffers** (not vim tabs). Special buffers (e.g. Nvim-tree, terminal, quickfix) are excluded from the bufferline.
 
 | Key | Action |
 |-----|--------|
 | `Shift+h` | Previous buffer |
 | `Shift+l` | Next buffer |
-| `<Space>bd` | Delete current buffer |
-| `<Space>ba` | Delete all buffers |
+| `<Space>bd` | Close current buffer |
+| `<Space>ba` | Close all buffers |
 
 Use **`<Space>fb`** (Telescope buffers) to search and pick a buffer by name.
 
@@ -147,11 +134,12 @@ These require a language server (e.g. via Mason) to be installed and attached.
 
 | Key | Action |
 |-----|--------|
-| `gd` | **Definitions** (Telescope list) |
-| `gD` | **Declaration** |
-| `gR` | **References** (Telescope list) |
-| `gi` | **Implementations** (Telescope list) |
-| `gt` | **Type definitions** (Telescope list) |
+| `<Space>gd` | **Definitions** (Telescope list) |
+| `<Space>gr` | **References** (Telescope list) |
+| `<Space>gi` | **Implementations** (Telescope list) |
+| `<Space>gt` | **Type definitions** (Telescope list) |
+
+Note: Git Diffview also uses `<Space>gd` (open diff). If both are loaded, Diffview’s binding takes effect; use document/workspace symbols (`<Space>ds` / `<Space>ws`) for LSP navigation.
 
 ### Document & Workspace Symbols
 
@@ -329,13 +317,14 @@ Select and move by semantic units:
 | `<Space>gD` | **Close** diff view |
 | `<Space>gf` | **File history** (log for current file) |
 
-### Git (Telescope)
+### Git (Telescope) & LazyGit
 
 | Key | Action |
 |-----|--------|
 | `<Space>gs` | **Git status** |
 | `<Space>gb` | **Git branches** |
 | `<Space>gc` | **Git commits** |
+| `<Space>gg` | **LazyGit** (lazygit.nvim TUI) |
 
 ### Conflicts & Worktrees
 
@@ -361,7 +350,7 @@ Select and move by semantic units:
 | Key | Action |
 |-----|--------|
 | `<Space>gm` | **Git messenger** – blame popup for line under cursor |
-| `<Space>tg` | **LazyGit** (terminal UI) |
+| `<Space>gg` | **LazyGit** (lazygit.nvim; see Git section) |
 
 ---
 
@@ -435,7 +424,6 @@ Last session is auto-saved on exit when possible.
 | `<Space>tf` | **Floating** terminal |
 | `<Space>th` | **Horizontal** terminal |
 | `<Space>tv` | **Vertical** terminal |
-| `<Space>tT` | Terminal in **tab** |
 | `<Space>t1` … `<Space>t4` | Named terminals 1–4 |
 
 **Inside terminal:**
@@ -447,9 +435,18 @@ Last session is auto-saved on exit when possible.
 
 | Key | Action |
 |-----|--------|
-| `<Space>tg` | **LazyGit** |
+| `<Space>gg` | **LazyGit** (lazygit.nvim) |
 | `<Space>tn` | **Node** REPL (float) |
 | `<Space>tp` | **Python** REPL (float) |
+
+### Overseer (tasks)
+
+| Key | Action |
+|-----|--------|
+| `<Space>or` | Run task |
+| `<Space>ot` | Toggle task list |
+| `<Space>oq` | Quick action |
+| `<Space>oc` | Close overseer |
 
 ---
 
@@ -472,7 +469,7 @@ Typical workflow: open 3–4 core files, `<Space>ha` each, then use `<Space>h1`�
 | Key | Action |
 |-----|--------|
 | `<Space>n` | Toggle **line numbers** |
-| `<Space>rn` | **Rename** symbol (LSP buffers) / Toggle **relative** line numbers (other buffers) |
+| `<Space>rn` | **Rename** symbol (LSP) |
 | `<Space>w` | Toggle **word wrap** |
 | `<Space>s` | Toggle **spell check** |
 
@@ -486,17 +483,16 @@ Typical workflow: open 3–4 core files, `<Space>ha` each, then use `<Space>h1`�
 |------|------|
 | **Files** | `ff` find, `fg` grep, `fb` buffers, `fr` recent, `fc` cursor word |
 | **Explorer** | `ee` tree, `ef` tree at file, `ec` collapse, `er` refresh |
-| **LSP** | `gd`/`gD`/`gi`/`gt`/`gR` (no leader), `ds` doc symbols, `ws` workspace symbols, `ca` code action, `rn` rename, `rs` restart |
+| **LSP** | `gd`/`gr`/`gi`/`gt` definitions/references/implementations/type defs, `ds` doc symbols, `ws` workspace symbols, `ca` code action, `rn` rename, `rs` restart |
 | **Diagnostics** | `d` float, `D` buffer, `xx`/`xw`/`xd`/`xq`/`xl`/`xt` Trouble |
-| **Git** | `gd` diffview, `gs` status, `gb` branches, `gc` commits, `ha`/`hh`/`h1`–`h4` Harpoon, `hs`/`hr`/`hp`/`hb` hunks |
+| **Git** | `gd`/`gD`/`gf` Diffview, `gg` LazyGit, `gs`/`gb`/`gc` status/branches/commits, `ha`/`hh`/`h1`–`h4` Harpoon, `hs`/`hr`/`hp`/`hb` hunks |
 | **Session** | `ss` save, `sl` load last, `sf` load, `sd` delete |
 | **Edit** | `/` comment, `mp` format, `sr` search-replace |
-| **Terminal** | `tt` toggle, `tf` float, `tg` LazyGit |
+| **Terminal** | `tt` toggle, `tf` float, `gg` LazyGit |
 | **Projects** | `p` projects |
 
 ### No-Leader Essentials
 
-- **`gd`** – go to definition  
 - **`K`** – hover  
 - **`Ctrl+h/j/k/l`** – window focus  
 - **`Shift+h` / `Shift+l`** – prev/next buffer  

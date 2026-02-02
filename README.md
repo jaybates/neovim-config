@@ -1,67 +1,74 @@
 # Neovim Configuration
 
-A modern, well-organized Neovim configuration built with Lua and lazy.nvim.
+A modern, IDE-style Neovim configuration built with Lua and lazy.nvim. Tuned for React/JS, Node, Python, Go, PHP, GraphQL, and common config formats (JSON, YAML, XML, SQL, Docker, Terraform).
 
 ## 🚀 Features
 
-- **Modern Plugin Manager**: Uses lazy.nvim for fast, lazy-loaded plugins
-- **Language Server Protocol**: Full LSP support with Mason for server management
-- **Intelligent Completion**: nvim-cmp with multiple sources and snippets
-- **Fuzzy Finding**: Telescope for file, buffer, and content searching
-- **Syntax Highlighting**: Treesitter with advanced text objects
-- **Git Integration**: Git signs, blame, and diff highlighting with LazyGit
-- **Terminal Integration**: Multiple terminal types with ToggleTerm and Floaterm
-- **Beautiful UI**: Catppuccin colorscheme with custom statusline
-- **Code Formatting**: Automatic formatting with conform.nvim
-- **Linting**: Real-time linting with nvim-lint
-- **File Explorer**: Nvim-tree for file navigation
-- **Debugging**: DAP integration for debugging
-- **Snippets**: LuaSnip with friendly-snippets
-- **AI Integration**: Claude AI for code assistance and generation
+- **Modern Plugin Manager**: lazy.nvim for fast, lazy-loaded plugins
+- **Language Server Protocol**: Full LSP support with Mason and mason-lspconfig
+- **Intelligent Completion**: nvim-cmp with LSP, snippets, buffer, and path sources
+- **Fuzzy Finding**: Telescope (horizontal layout, fd/ripgrep) for files, buffers, and grep
+- **Syntax Highlighting**: Treesitter with text objects and incremental selection
+- **Git**: Gitsigns, Diffview, LazyGit (`<leader>gg`), conflict resolution, worktrees
+- **Terminal**: ToggleTerm (floating/horizontal/vertical, numbered); LazyGit via lazygit.nvim
+- **UI**: Catppuccin colorscheme, Lualine, Bufferline (buffers, not tabs), Nvim-tree, Dressing, Noice
+- **Formatting & Linting**: Conform (format-on-save optional) and nvim-lint (debounced)
+- **File Explorer**: Nvim-tree (stays open; placeholder layout when opening a directory)
+- **Debugging**: DAP integration (debugging.lua)
+- **Sessions & Projects**: Session manager and project.nvim (Telescope projects)
+- **AI**: Claude plugin for code assistance
 
 ## 📁 Structure
 
 ```
 ~/.config/nvim/
-├── init.lua                 # Main entry point
-├── lazy-lock.json          # Plugin lock file
-└── lua/
-    └── jaybates/
-        ├── init.lua        # Configuration loader
-        ├── lazy.lua        # Lazy.nvim setup
-        └── core/
-            ├── init.lua    # Core configuration loader
-            ├── options.lua # Neovim options
-            ├── keyremaps.lua # Basic key mappings
-            └── keymaps.lua # Advanced plugin key mappings
-        └── plugins/
-            ├── init.lua    # Plugin dependencies
-            ├── alpha.lua   # Startup screen
-            ├── autopairs.lua # Auto-pairing brackets
-            ├── bufferline.lua # Buffer line
-            ├── colorscheme.lua # Catppuccin theme
-            ├── comment.lua # Commenting
-            ├── conform.lua # Code formatting
-            ├── dressing.lua # Enhanced UI
-            ├── harpoon.lua # File marks
-            ├── indent-blankline.lua # Indent guides
-            ├── lualine.lua # Status line
-            ├── noice.lua   # Enhanced UI
-            ├── nvim-cmp.lua # Completion engine
-            ├── nvim-lint.lua # Linting
-            ├── nvim-notify.lua # Notifications
-            ├── nvim-surround.lua # Surround text
-            ├── nvim-tree.lua # File explorer
-            ├── nvim-treesitter-text-objects.lua # Text objects
-            ├── substitute.lua # Text substitution
-            ├── telescope.lua # Fuzzy finder
-            ├── todo-comments.lua # Todo highlighting
-            ├── treesitter.lua # Syntax highlighting
-            ├── trouble.lua # Diagnostics
-            ├── which-key.lua # Key mapping helper
-            └── lsp/
-                ├── mason.lua # LSP installer
-                └── nvim-lspconfig.lua # LSP configuration
+├── init.lua                    # Entry point
+├── lazy-lock.json              # Plugin lock file
+├── validate_config.lua         # Optional config validator
+└── lua/jaybates/
+    ├── init.lua                # Loads core and lazy
+    ├── lazy.lua                # Lazy.nvim setup (load order documented)
+    └── core/
+        ├── init.lua            # Options, keyremaps, keymaps; LSP shim; project layout
+        ├── options.lua         # Neovim options (GUI, relativenumber, large-file)
+        ├── keyremaps.lua       # Basic keymaps (buffer/window/terminal/search)
+        ├── keymaps.lua         # Plugin keymaps (Telescope, LSP, format, comment, etc.)
+        └── dependency_installer.lua  # Auto-install fd, ripgrep, etc.
+    └── plugins/
+        ├── init.lua            # Plenary (priority 1000)
+        ├── alpha.lua           # Startup dashboard (custom NEOVIM header)
+        ├── autopairs.lua       # Auto-pairing
+        ├── bufferline.lua      # Buffer line (buffers, not tabs)
+        ├── colorscheme.lua     # Catppuccin
+        ├── comment.lua         # Comment.nvim
+        ├── conform.lua         # Formatting (LSP fallback)
+        ├── debugging.lua      # DAP
+        ├── dressing.lua        # UI (inputs, selects)
+        ├── harpoon.lua         # File marks
+        ├── indent-blankline.lua # Indent guides
+        ├── lualine.lua         # Statusline
+        ├── noice.lua           # Cmdline/notify UI
+        ├── nvim-cmp.lua        # Completion
+        ├── nvim-lint.lua       # Linting (debounced)
+        ├── nvim-notify.lua     # Notifications
+        ├── nvim-surround.lua   # Surround
+        ├── nvim-tree.lua       # File explorer
+        ├── nvim-treesitter-text-objects.lua # Text objects
+        ├── projects.lua        # project.nvim (Telescope projects)
+        ├── sessions.lua        # Session manager
+        ├── substitute.lua      # Substitute.nvim
+        ├── telescope.lua       # Fuzzy finder (horizontal layout)
+        ├── terminal.lua        # ToggleTerm
+        ├── terminal-extras.lua # LazyGit (<leader>gg), Overseer
+        ├── todo-comments.lua   # TODO/FIXME
+        ├── treesitter.lua      # Treesitter
+        ├── trouble.lua         # Diagnostics/quickfix UI
+        ├── web-dev.lua         # Emmet, autotag
+        ├── which-key.lua       # Keybinding hints
+        ├── claude.lua          # Claude AI
+        └── lsp/
+            ├── mason.lua       # Mason + mason-tool-installer
+            └── nvim-lspconfig.lua # LSP config + mason-lspconfig handlers
 ```
 
 ## 🔧 Installation
@@ -106,77 +113,43 @@ A modern, well-organized Neovim configuration built with Lua and lazy.nvim.
 
 ## ⌨️ Key Mappings
 
-### Leader Key
-- `<Space>` - Leader key
+**Leader key:** `<Space>`. Press `<Space>` and wait for Which-key to see all bindings.
 
-### File Operations
-- `<leader>ff` - Find files
-- `<leader>fg` - Live grep
-- `<leader>fb` - Find buffers
-- `<leader>fh` - Find help tags
-- `<leader>fr` - Find recent files
-- `<leader>fc` - Find string under cursor
+### File & navigation
+- `<leader>ff` / `fg` / `fb` / `fr` / `fh` / `fc` – Find files, live grep, buffers, recent, help, word under cursor
+- `<leader>gd` / `gr` / `gi` / `gt` – LSP definitions, references, implementations, type definitions
+- `<leader>ds` / `ws` – Document symbols, workspace symbols
+- `<leader>ee` / `ef` – Toggle Nvim-tree, Nvim-tree at current file
+- `<leader>ec` / `er` – Collapse/refresh Nvim-tree
+- `<leader>p` – Projects (Telescope)
 
-### File Explorer
-- `<leader>ee` - Toggle file explorer
-- `<leader>ef` - Find file in explorer
-- `<leader>ec` - Collapse explorer
-- `<leader>er` - Refresh explorer
+### Buffer & window
+- `<S-h>` / `<S-l>` – Previous/next buffer (or click bufferline)
+- `<leader>bd` / `ba` – Close buffer / close all buffers
+- `<C-h/j/k/l>` – Focus window left/down/up/right
+- `<C-Up/Down/Left/Right>` – Resize window
 
-### LSP Operations
-- `<leader>ca` - Code actions
-- `<leader>rn` - Rename symbol
-- `K` - Show documentation
-- `<leader>d` - Show line diagnostics
-- `<leader>D` - Show buffer diagnostics
-- `]d` - Next diagnostic
-- `[d` - Previous diagnostic
+### LSP & diagnostics
+- `K` – Hover; `<leader>ca` – Code action; `<leader>rn` – Rename; `<leader>rs` – Restart LSP
+- `<leader>d` / `D` – Line diagnostics float / buffer diagnostics (Telescope)
+- `]d` / `[d` – Next/previous diagnostic
+- `<leader>xx` / `xw` / `xd` / `xq` / `xl` / `xt` – Trouble (toggle, workspace, document, quickfix, loclist, todos)
 
-### Git Operations
-- `<leader>gs` - Git status
-- `<leader>gb` - Git branches
-- `<leader>gc` - Git commits
+### Git
+- `<leader>gs` / `gb` / `gc` – Git status, branches, commits (Telescope)
+- `<leader>gg` – LazyGit (lazygit.nvim)
+- `<leader>gd` / `gD` / `gf` – Diffview open/close/file history (git.lua; may override LSP `gd` when both loaded)
+- Gitsigns: `]c`/`[c` hunks, `<leader>hs`/`hr`/`hp`/`hb` stage/reset/preview/blame; `<leader>tb`/`td` toggle blame/deleted
 
-### Buffer Management
-- `<S-h>` - Previous buffer
-- `<S-l>` - Next buffer
-- `<leader>bd` - Delete buffer
-- `<leader>ba` - Delete all buffers
+### Edit & format
+- `<leader>/` – Toggle comment; `<leader>mp` – Format (Conform + LSP fallback)
+- `<A-j>` / `<A-k>` – Move line(s) down/up
+- Substitute: `s`+motion, `ss`, `S`, `s` in visual
 
-### Window Management
-- `<C-h/j/k/l>` - Navigate windows
-- `<C-Up/Down/Left/Right>` - Resize windows
-- `<A-j/k>` - Move lines up/down
-
-### Commenting
-- `<leader>/` - Toggle comment
-
-### Formatting
-- `<leader>mp` - Format file/selection
-
-### Harpoon (File Marks)
-- `<leader>ha` - Add file to harpoon
-- `<leader>hh` - Toggle harpoon menu
-- `<leader>h1/2/3/4` - Navigate to marked files
-
-### Terminal Operations
-- `<leader>tt` - Toggle terminal
-- `<leader>tf` - Toggle floating terminal
-- `<leader>th` - Toggle horizontal terminal
-- `<leader>tv` - Toggle vertical terminal
-- `<leader>tT` - Toggle tab terminal
-- `<leader>t1/2/3/4` - Toggle numbered terminals
-- `<leader>tg` - Open LazyGit
-- `<leader>tn` - Node.js REPL
-- `<leader>tp` - Python REPL
-
-### Trouble (Diagnostics)
-- `<leader>xx` - Toggle trouble
-- `<leader>xw` - Workspace diagnostics
-- `<leader>xd` - Document diagnostics
-- `<leader>xq` - Quickfix list
-- `<leader>xl` - Location list
-- `<leader>xt` - Todo trouble
+### Harpoon & terminal
+- `<leader>ha` – Add to harpoon; `<leader>hh` – Menu; `<leader>h1`–`h4` – Jump to slot
+- `<leader>tt` / `tf` / `th` / `tv` – Toggle terminal (default/float/horizontal/vertical)
+- `<leader>t1`–`t4` – Numbered terminals; `<leader>tn` / `tp` – Node/Python REPL
 
 ## 🎨 Customization
 
@@ -195,16 +168,7 @@ The configuration uses Catppuccin with the Macchiato variant. To change:
 3. Add key mappings to `lua/jaybates/core/keymaps.lua` if needed
 
 ### LSP Servers
-To add new LSP servers:
-
-1. Edit `lua/jaybates/plugins/lsp/mason.lua`
-2. Add the server to `ensure_installed`:
-   ```lua
-   ensure_installed = {
-     "your_lsp_server",
-     -- ... other servers
-   }
-   ```
+LSP servers and handlers are in `lua/jaybates/plugins/lsp/nvim-lspconfig.lua` (mason-lspconfig `ensure_installed` and `handlers`). Mason itself is configured in `lua/jaybates/plugins/lsp/mason.lua`. Add new servers to the `ensure_installed` list in nvim-lspconfig.lua and add a handler if needed.
 
 ### Formatters
 To add new formatters:
@@ -260,4 +224,3 @@ This configuration is provided as-is for educational and personal use.
 - [LazyVim](https://github.com/LazyVim/LazyVim) for inspiration
 - [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim) for structure
 - All the amazing Neovim plugin developers
-# neovim-config
