@@ -15,7 +15,7 @@ return {
             -- =============================================================================
             -- THEME VARIANT
             -- =============================================================================
-            flavour = "macchiato", -- Options: latte, frappe, macchiato, mocha
+            flavour = "mocha", -- Options: latte, frappe, macchiato, mocha
             
             -- =============================================================================
             -- BACKGROUND OPTIONS
