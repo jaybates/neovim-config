@@ -11,11 +11,6 @@ vim.opt.clipboard = 'unnamedplus'   -- Use system clipboard for all operations
 vim.opt.mouse = 'a'                 -- Enable mouse support in all modes
 
 -- =============================================================================
--- SHELL (login shell so embedded terminal gets nvm, etc. from .zshrc)
--- =============================================================================
-vim.opt.shellcmdflag = "-l -c"     -- Run shell as login shell (sources .zshrc/.bash_profile)
-
--- =============================================================================
 -- COMPLETION & AUTOCOMPLETE
 -- =============================================================================
 vim.opt.completeopt = {'menu', 'menuone', 'noselect'} -- Better completion menu behavior
