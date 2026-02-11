@@ -26,7 +26,7 @@ return {
             -- =============================================================================
             -- TERMINAL INTEGRATION
             -- =============================================================================
-            term_colors = false, -- Set terminal colors (useful for some terminals)
+            term_colors = true, -- Use Catppuccin palette in Neovim terminal (ANSI colors)
             
             -- =============================================================================
             -- INACTIVE WINDOW DIMming

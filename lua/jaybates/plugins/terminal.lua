@@ -39,7 +39,7 @@ return {
             persist_size = true, -- If true, the terminal size will be persisted
             direction = "float", -- The direction for the terminal
             close_on_exit = true, -- Close the terminal window when the process exits
-            shell = vim.o.shell, -- Change the default shell
+            shell = vim.o.shell, -- Use shell from options (login shell via shellcmdflag in options.lua for nvm)
             auto_scroll = true, -- Automatically scroll to the bottom on terminal output
 
             -- =============================================================================
